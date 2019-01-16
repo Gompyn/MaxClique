@@ -30,5 +30,11 @@
 *.exe
 *.out
 *.app
+main
+generate_graph
+
+# Editor files
 /.vs
 /CppProperties.json
+tags
+compile_commands.json
