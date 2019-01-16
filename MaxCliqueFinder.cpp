@@ -28,6 +28,7 @@ void MaxCliqueFinder::Init(){
 	memset(remove_cand_ind,0,sizeof(remove_cand_ind));
 	best_nc=0;
 	memset(best_in_cover,0,sizeof(best_in_cover));
+    done = false;
 	uncover_stack_p=0;
 	memset(conf_change,0,sizeof(conf_change));
 	memset(tabu,0,sizeof(tabu));
@@ -208,11 +209,14 @@ int MaxCliqueFinder::ChooseAddV(int remove_v1,int remove_v2){
 	}
 	return max_v;
 }
-inline void MaxCliqueFinder::UpdateBestSolution(){
+inline bool MaxCliqueFinder::UpdateBestSolution(){
+    lock_guard<mutex> lg{done_m};
+    if (done) return false;
 	if(nc<best_nc){
 		best_nc=nc;
 		memcpy(best_in_cover,in_cover,sizeof(bool)*(n+1));
 	}
+    return true;
 }
 void MaxCliqueFinder::RemoveRedundant(){
 	int i,v;
@@ -267,6 +271,8 @@ void MaxCliqueFinder::ConstructVC(int tries){
 	}
 	
 	best_nc=nc;
+    lock_guard<mutex> lg(done_m);
+    if (done) return;
 	memcpy(best_in_cover,in_cover,sizeof(bool)*(n+1));
 }
 void MaxCliqueFinder::UpdateEdgeWeight(){
@@ -304,8 +310,10 @@ void MaxCliqueFinder::LocalSearch(int iters){
 		}
 		RemoveRedundant();
 		
-		UpdateBestSolution();
+		if (!UpdateBestSolution()) break;
 	}
+    lock_guard<mutex> lg(done_m);
+    done = true;
 }
 
 void MaxCliqueFinder::InitComplimentGraph(){

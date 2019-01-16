@@ -1,6 +1,7 @@
 #pragma once
 #include <map>
 #include <vector>
+#include <mutex>
 using namespace std;
 using ll = long long;
 constexpr int maxn=1010;
@@ -60,7 +61,7 @@ private:
 	int ChooseRemove_MinLoss();
 	int ChooseRemove_BMS(int times);
 	int ChooseAddV(int remove_v1,int remove_v2);
-	inline void UpdateBestSolution();
+	inline bool UpdateBestSolution();
 	void RemoveRedundant();
 	void ConstructVC(int tries);
 	void UpdateEdgeWeight();
@@ -70,6 +71,9 @@ private:
 	void FindMinVertexCover();
 	
 public:
+
+    bool done = false;
+    mutex done_m;
 
 	MaxCliqueFinder(int ConstructVC_max_tries,
 					int RemoveBMS_max_tries,

@@ -41,7 +41,7 @@ unsigned read_u() {
 
 int n,m;
 
-MaxCliqueFinder finder(200, 100, Local_Search_Iterations);
+MaxCliqueFinder finder(ConstructVC_Max_Tries, RemoveBMS_Max_Tries, Local_Search_Iterations);
 vector<int>max_clique;
 
 void Initialize(){
