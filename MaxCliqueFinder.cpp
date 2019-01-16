@@ -210,7 +210,7 @@ int MaxCliqueFinder::ChooseAddV(int remove_v1,int remove_v2){
 	return max_v;
 }
 inline bool MaxCliqueFinder::UpdateBestSolution(){
-    lock_guard<mutex> lg{done_m};
+    lock_guard<mutex> lg{*done_m};
     if (done) return false;
 	if(nc<best_nc){
 		best_nc=nc;
@@ -271,7 +271,7 @@ void MaxCliqueFinder::ConstructVC(int tries){
 	}
 	
 	best_nc=nc;
-    lock_guard<mutex> lg(done_m);
+    lock_guard<mutex> lg(*done_m);
     if (done) return;
 	memcpy(best_in_cover,in_cover,sizeof(bool)*(n+1));
 }
@@ -312,7 +312,7 @@ void MaxCliqueFinder::LocalSearch(int iters){
 		
 		if (!UpdateBestSolution()) break;
 	}
-    lock_guard<mutex> lg(done_m);
+    lock_guard<mutex> lg(*done_m);
     done = true;
 }
 

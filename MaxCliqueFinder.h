@@ -73,14 +73,16 @@ private:
 public:
 
     bool done = false;
-    mutex done_m;
+    mutex *done_m;
 
 	MaxCliqueFinder(int ConstructVC_max_tries,
 					int RemoveBMS_max_tries,
 					int (*LocalSearch_iteration)(int, int)):
 		ConstructVC_Max_Tries(ConstructVC_max_tries),
 		RemoveBMS_Max_Tries(RemoveBMS_max_tries),
-		Local_Search_Iteration(LocalSearch_iteration) { }
+		Local_Search_Iteration(LocalSearch_iteration),
+    done_m(new mutex) { }
+    ~MaxCliqueFinder() { delete done_m; }
 	void Init();
 	void AddVertex(int u);
 	void AddEdge(int u,int v);

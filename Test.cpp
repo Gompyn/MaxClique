@@ -28,7 +28,7 @@ int main() {
                 }, ref(finder), ref(temp));
         this_thread::sleep_for(120s);
         {
-            lock_guard<mutex> lg(finder.done_m);
+            lock_guard<mutex> lg(*finder.done_m);
             finder.done = true;
         }
         t.join();
