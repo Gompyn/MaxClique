@@ -32,6 +32,7 @@
 *.app
 main
 generate_graph
+test
 
 # Editor files
 /.vs

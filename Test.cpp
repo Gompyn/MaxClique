@@ -3,11 +3,14 @@
 #include <vector>
 #include <functional>
 #include <thread>
+#include <condition_variable>
 using namespace std;
 using namespace chrono_literals;
 
 bool _t = ios::sync_with_stdio(false);
 vector<MaxCliqueFinder> finders;
+condition_variable cv;
+mutex cv_m;
 int main() {
     int n, m;
     cin >> n >> m;
@@ -25,9 +28,11 @@ int main() {
         vector<int> temp;
         thread t([](MaxCliqueFinder &finder, vector<int> &res){
                     res = finder.FindMaxClique();
+                    cv.notify_one();
                 }, ref(finder), ref(temp));
-        this_thread::sleep_for(120s);
         {
+            unique_lock<mutex> lk(cv_m);
+            cv.wait_for(lk, 120s);
             lock_guard<mutex> lg(*finder.done_m);
             finder.done = true;
         }
